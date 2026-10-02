@@ -40,15 +40,21 @@ endif()
 # Set the output directory for binaries
 set(BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
 
-# Add chapters
-add_subdirectory(Chapter_03)
-add_subdirectory(Chapter_04)
-add_subdirectory(Chapter_05)
-add_subdirectory(Chapter_06)
-add_subdirectory(Chapter_07)
-add_subdirectory(Chapter_08)
-add_subdirectory(Chapter_09)
-add_subdirectory(Chapter_10)
-add_subdirectory(Chapter_11)
-add_subdirectory(Chapter_12)
-add_subdirectory(Chapter_13)
+# Add source code
+add_subdirectory(SourceCode)
+
+# Convenience target that depends on every example executable, recursively
+# collected from SourceCode's chapter subdirectories (same set the default
+# "all" target already builds; this just gives it a discoverable name).
+function(collect_buildsystem_targets dir out_var)
+    get_property(targets DIRECTORY ${dir} PROPERTY BUILDSYSTEM_TARGETS)
+    get_property(subdirs DIRECTORY ${dir} PROPERTY SUBDIRECTORIES)
+    foreach(subdir ${subdirs})
+        collect_buildsystem_targets(${subdir} sub_targets)
+        list(APPEND targets ${sub_targets})
+    endforeach()
+    set(${out_var} ${targets} PARENT_SCOPE)
+endfunction()
+
+collect_buildsystem_targets(${CMAKE_SOURCE_DIR}/SourceCode ALL_EXAMPLE_TARGETS)
+add_custom_target(build_all DEPENDS ${ALL_EXAMPLE_TARGETS})
