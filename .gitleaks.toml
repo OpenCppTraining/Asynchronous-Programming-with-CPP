@@ -1,0 +1,4 @@
+title = "Asynchronous-Programming-with-CPP gitleaks config"
+
+[extend]
+useDefault = true

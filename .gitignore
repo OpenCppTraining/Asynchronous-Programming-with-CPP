@@ -4,3 +4,8 @@ CMakeFiles
 Makefile
 *.cmake
 CMakeCache.txt
+
+.DS_Store
+*.bak
+.cache/
+gitleaks-report.json
