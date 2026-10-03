@@ -33,8 +33,10 @@ endif()
 
 # Linker flags
 if((CMAKE_CXX_COMPILER_ID MATCHES GNU) OR (CMAKE_CXX_COMPILER_ID MATCHES Clang))
-    set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS} -O0 -g3 -Wall -Wextra -pedantic")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -DNDEBUG -Wall -Wextra -pedantic")
+    set(CMAKE_CXX_FLAGS_DEBUG
+        "${CMAKE_CXX_FLAGS} -O0 -g3 -Wall -Wextra -pedantic")
+    set(CMAKE_CXX_FLAGS_RELEASE
+        "${CMAKE_CXX_FLAGS} -O3 -DNDEBUG -Wall -Wextra -pedantic")
 endif()
 
 # Set the output directory for binaries
@@ -44,16 +46,24 @@ set(BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
 add_subdirectory(SourceCode)
 
 # Convenience target that depends on every example executable, recursively
-# collected from SourceCode's chapter subdirectories (same set the default
-# "all" target already builds; this just gives it a discoverable name).
+# collected from SourceCode's chapter subdirectories (same set the default "all"
+# target already builds; this just gives it a discoverable name).
 function(collect_buildsystem_targets dir out_var)
-    get_property(targets DIRECTORY ${dir} PROPERTY BUILDSYSTEM_TARGETS)
-    get_property(subdirs DIRECTORY ${dir} PROPERTY SUBDIRECTORIES)
+    get_property(
+        targets
+        DIRECTORY ${dir}
+        PROPERTY BUILDSYSTEM_TARGETS)
+    get_property(
+        subdirs
+        DIRECTORY ${dir}
+        PROPERTY SUBDIRECTORIES)
     foreach(subdir ${subdirs})
         collect_buildsystem_targets(${subdir} sub_targets)
         list(APPEND targets ${sub_targets})
     endforeach()
-    set(${out_var} ${targets} PARENT_SCOPE)
+    set(${out_var}
+        ${targets}
+        PARENT_SCOPE)
 endfunction()
 
 collect_buildsystem_targets(${CMAKE_SOURCE_DIR}/SourceCode ALL_EXAMPLE_TARGETS)

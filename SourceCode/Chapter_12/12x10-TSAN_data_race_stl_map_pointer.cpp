@@ -1,12 +1,12 @@
 #include <iostream>
-#include <thread>
 #include <map>
 #include <string>
+#include <thread>
 
 typedef std::map<std::string, std::string> map_t;
 
 void *func(void *p) {
-  map_t& m = *static_cast<map_t*>(p);
+  map_t &m = *static_cast<map_t *>(p);
   m["foo"] = "bar";
   return 0;
 }

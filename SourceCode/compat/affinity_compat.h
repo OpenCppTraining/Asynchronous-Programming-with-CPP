@@ -13,13 +13,14 @@
 #include <pthread.h>
 
 inline void set_affinity(int core) {
-    if (core < 0) {
-        return;
-    }
+  if (core < 0) {
+    return;
+  }
 
-    thread_affinity_policy_data_t policy{core};
-    thread_policy_set(pthread_mach_thread_np(pthread_self()), THREAD_AFFINITY_POLICY,
-                       reinterpret_cast<thread_policy_t>(&policy), THREAD_AFFINITY_POLICY_COUNT);
+  thread_affinity_policy_data_t policy{core};
+  thread_policy_set(
+      pthread_mach_thread_np(pthread_self()), THREAD_AFFINITY_POLICY,
+      reinterpret_cast<thread_policy_t>(&policy), THREAD_AFFINITY_POLICY_COUNT);
 }
 
 #elif defined(__linux__)
@@ -29,28 +30,28 @@ inline void set_affinity(int core) {
 #include <sched.h>
 
 inline void set_affinity(int core) {
-    if (core < 0) {
-        return;
-    }
+  if (core < 0) {
+    return;
+  }
 
-    cpu_set_t cpuset;
-    CPU_ZERO(&cpuset);
-    CPU_SET(core, &cpuset);
-    if (pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset) != 0) {
-        perror("pthread_setaffinity_np");
-        exit(EXIT_FAILURE);
-    }
+  cpu_set_t cpuset;
+  CPU_ZERO(&cpuset);
+  CPU_SET(core, &cpuset);
+  if (pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset) != 0) {
+    perror("pthread_setaffinity_np");
+    exit(EXIT_FAILURE);
+  }
 }
 
 #elif defined(_WIN32)
 #include <windows.h>
 
 inline void set_affinity(int core) {
-    if (core < 0) {
-        return;
-    }
+  if (core < 0) {
+    return;
+  }
 
-    SetThreadAffinityMask(GetCurrentThread(), static_cast<DWORD_PTR>(1) << core);
+  SetThreadAffinityMask(GetCurrentThread(), static_cast<DWORD_PTR>(1) << core);
 }
 
 #else

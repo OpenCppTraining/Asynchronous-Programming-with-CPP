@@ -6,8 +6,7 @@
 
 int *ptr = nullptr;
 
-__attribute__((noinline))
-void func() {
+__attribute__((noinline)) void func() {
   int local[100];
   // Danger: Pointer to local variable
   ptr = &local[0];

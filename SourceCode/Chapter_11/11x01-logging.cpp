@@ -12,76 +12,77 @@
 using namespace std::chrono_literals;
 
 int main() {
-    uint32_t counter1{};
-    std::mutex mtx1;
+  uint32_t counter1{};
+  std::mutex mtx1;
 
-    uint32_t counter2{};
-    std::mutex mtx2;
+  uint32_t counter2{};
+  std::mutex mtx2;
 
-    // Create a multi-sink logger logging into console and a file simultaneously
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_sink->set_level(spdlog::level::debug);
+  // Create a multi-sink logger logging into console and a file simultaneously
+  auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+  console_sink->set_level(spdlog::level::debug);
 
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logging.log", true);
-    file_sink->set_level(spdlog::level::info);
+  auto file_sink =
+      std::make_shared<spdlog::sinks::basic_file_sink_mt>("logging.log", true);
+  file_sink->set_level(spdlog::level::info);
 
-    spdlog::logger logger("multi_sink", {console_sink, file_sink});
-    logger.set_pattern("%Y-%m-%d %H:%M:%S.%f - Thread %t [%l] : %v");
-    logger.set_level(spdlog::level::debug);
+  spdlog::logger logger("multi_sink", {console_sink, file_sink});
+  logger.set_pattern("%Y-%m-%d %H:%M:%S.%f - Thread %t [%l] : %v");
+  logger.set_level(spdlog::level::debug);
 
-    auto increase_and_swap = [&]() {
-        logger.info("Incrementing both counters...");
-        counter1++;
-        counter2++;
+  auto increase_and_swap = [&]() {
+    logger.info("Incrementing both counters...");
+    counter1++;
+    counter2++;
 
-        logger.info("Swapping counters...");
-        std::swap(counter1, counter2);
-    };
+    logger.info("Swapping counters...");
+    std::swap(counter1, counter2);
+  };
 
-    auto worker1 = [&]() {
-        logger.debug("Entering worker1");
+  auto worker1 = [&]() {
+    logger.debug("Entering worker1");
 
-        logger.info("Locking mtx1...");
-        std::lock_guard<std::mutex> lock1(mtx1);
-        logger.info("Mutex mtx1 locked");
+    logger.info("Locking mtx1...");
+    std::lock_guard<std::mutex> lock1(mtx1);
+    logger.info("Mutex mtx1 locked");
 
-        std::this_thread::sleep_for(100ms);
+    std::this_thread::sleep_for(100ms);
 
-        logger.info("Locking mtx2...");
-        std::lock_guard<std::mutex> lock2(mtx2);
-        logger.info("Mutex mtx2 locked");
+    logger.info("Locking mtx2...");
+    std::lock_guard<std::mutex> lock2(mtx2);
+    logger.info("Mutex mtx2 locked");
 
-        increase_and_swap();
+    increase_and_swap();
 
-        logger.debug("Leaving worker1");
-    };
+    logger.debug("Leaving worker1");
+  };
 
-    auto worker2 = [&]() {
-        logger.debug("Entering worker2");
+  auto worker2 = [&]() {
+    logger.debug("Entering worker2");
 
-        logger.info("Locking mtx2...");
-        std::lock_guard<std::mutex> lock2(mtx2);
-        logger.info("Mutex mtx2 locked");
+    logger.info("Locking mtx2...");
+    std::lock_guard<std::mutex> lock2(mtx2);
+    logger.info("Mutex mtx2 locked");
 
-        std::this_thread::sleep_for(100ms);
+    std::this_thread::sleep_for(100ms);
 
-        logger.info("Locking mtx1...");
-        std::lock_guard<std::mutex> lock1(mtx1);
-        logger.info("Mutex mtx1 locked");
+    logger.info("Locking mtx1...");
+    std::lock_guard<std::mutex> lock1(mtx1);
+    logger.info("Mutex mtx1 locked");
 
-        increase_and_swap();
+    increase_and_swap();
 
-        logger.debug("Leaving worker2");
-    };
+    logger.debug("Leaving worker2");
+  };
 
-    logger.debug("Starting main function...");
+  logger.debug("Starting main function...");
 
-    std::thread t1(worker1);
-    std::thread t2(worker2);
+  std::thread t1(worker1);
+  std::thread t2(worker2);
 
-    t1.join();
-    t2.join();
+  t1.join();
+  t2.join();
 
-    spdlog::dump_backtrace();
-    return 0;
+  spdlog::dump_backtrace();
+  return 0;
 }

@@ -1,10 +1,10 @@
 #include <chrono>
 #include <iostream>
-#include <version>  // for __cpp_lib_syncbuf
+#include <version> // for __cpp_lib_syncbuf
 #if defined(__cpp_lib_syncbuf)
 #include <syncstream>
 #else
-#include "osyncstream_compat.h"  // Apple's libc++ ships <syncstream> without implementing std::osyncstream.
+#include "osyncstream_compat.h" // Apple's libc++ ships <syncstream> without implementing std::osyncstream.
 #endif
 #include <thread>
 
@@ -17,20 +17,20 @@ int timeout = 3;
 }
 
 void daemonThread() {
-    sync_cout << "Daemon thread starting...\n";
-    while (timeout-- > 0) {
-        sync_cout << "Daemon thread is running...\n";
-        std::this_thread::sleep_for(1s);
-    }
-    sync_cout << "Daemon thread exiting...\n";
+  sync_cout << "Daemon thread starting...\n";
+  while (timeout-- > 0) {
+    sync_cout << "Daemon thread is running...\n";
+    std::this_thread::sleep_for(1s);
+  }
+  sync_cout << "Daemon thread exiting...\n";
 }
 
 int main() {
-    std::thread t(daemonThread);
-    t.detach();
+  std::thread t(daemonThread);
+  t.detach();
 
-    std::this_thread::sleep_for(std::chrono::seconds(timeout + 1));
+  std::this_thread::sleep_for(std::chrono::seconds(timeout + 1));
 
-    sync_cout << "Main thread exiting...\n";
-    return 0;
+  sync_cout << "Main thread exiting...\n";
+  return 0;
 }

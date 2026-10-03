@@ -11,20 +11,20 @@
 namespace std {
 
 class osyncstream : public std::ostringstream {
-   public:
-    explicit osyncstream(std::ostream& out) : out_(out) {}
-    osyncstream(const osyncstream&) = delete;
-    osyncstream& operator=(const osyncstream&) = delete;
+public:
+  explicit osyncstream(std::ostream &out) : out_(out) {}
+  osyncstream(const osyncstream &) = delete;
+  osyncstream &operator=(const osyncstream &) = delete;
 
-    ~osyncstream() {
-        static std::mutex mutex;
-        std::lock_guard<std::mutex> lock(mutex);
-        out_ << str();
-        out_.flush();
-    }
+  ~osyncstream() {
+    static std::mutex mutex;
+    std::lock_guard<std::mutex> lock(mutex);
+    out_ << str();
+    out_.flush();
+  }
 
-   private:
-    std::ostream& out_;
+private:
+  std::ostream &out_;
 };
 
-}  // namespace std
+} // namespace std

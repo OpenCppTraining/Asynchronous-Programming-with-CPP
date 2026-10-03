@@ -2,19 +2,14 @@
 #include <thread>
 
 class RefCountedObject {
-   public:
-    
-    void Ref() {      
-        ++ref_;
-    }
+public:
+  void Ref() { ++ref_; }
 
-    void Unref() {
-        --ref_;
-    }
+  void Unref() { --ref_; }
 
-   private:
-    // ref_ should be atomic to avoid synchronization issues
-    int ref_{0};
+private:
+  // ref_ should be atomic to avoid synchronization issues
+  int ref_{0};
 };
 
 int main() {

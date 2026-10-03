@@ -6,28 +6,29 @@
 
 using namespace std::chrono_literals;
 
-void asyncFunc(boost::asio::io_context& io_context, std::function<void(int)> callback) {
-    // io_context::post() was a member function in older Boost.Asio; it has
-    // since been removed, so use the free function form instead.
-    boost::asio::post(io_context, [callback]() {
-        std::this_thread::sleep_for(100ms);
-        callback(42);
-    });
+void asyncFunc(boost::asio::io_context &io_context,
+               std::function<void(int)> callback) {
+  // io_context::post() was a member function in older Boost.Asio; it has
+  // since been removed, so use the free function form instead.
+  boost::asio::post(io_context, [callback]() {
+    std::this_thread::sleep_for(100ms);
+    callback(42);
+  });
 }
 
 TEST(AsyncTest, TestBoostAsio) {
-    boost::asio::io_context io_context;
+  boost::asio::io_context io_context;
 
-    int result = 0;
-    asyncFunc(io_context, [&result](int value) { result = value; });
+  int result = 0;
+  asyncFunc(io_context, [&result](int value) { result = value; });
 
-    std::jthread io_thread([&io_context]() { io_context.run(); });
+  std::jthread io_thread([&io_context]() { io_context.run(); });
 
-    std::this_thread::sleep_for(150ms);
-    EXPECT_EQ(result, 42);
+  std::this_thread::sleep_for(150ms);
+  EXPECT_EQ(result, 42);
 }
 
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

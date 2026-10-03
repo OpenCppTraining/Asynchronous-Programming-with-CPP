@@ -1,5 +1,5 @@
-# Portability shims for standard library gaps (e.g. missing std::osyncstream
-# or <generator> on Apple's libc++) and small platform-specific helpers.
+# Portability shims for standard library gaps (e.g. missing std::osyncstream or
+# <generator> on Apple's libc++) and small platform-specific helpers.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/compat)
 
 # Add chapters

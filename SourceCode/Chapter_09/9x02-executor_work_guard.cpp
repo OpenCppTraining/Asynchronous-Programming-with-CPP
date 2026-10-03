@@ -5,38 +5,39 @@
 
 using namespace std::chrono_literals;
 
-void background_task(boost::asio::io_context& io_context) {
-    // Waiting for 2 seconds before posting work
-    std::this_thread::sleep_for(2s);
-    std::cout << "Posting a background task.\n";
-    // io_context::post() was a member function in older Boost.Asio; it has
-    // since been removed, so use the free function form instead.
-    boost::asio::post(io_context, []() { std::cout << "Background task completed!\n"; });
+void background_task(boost::asio::io_context &io_context) {
+  // Waiting for 2 seconds before posting work
+  std::this_thread::sleep_for(2s);
+  std::cout << "Posting a background task.\n";
+  // io_context::post() was a member function in older Boost.Asio; it has
+  // since been removed, so use the free function form instead.
+  boost::asio::post(io_context,
+                    []() { std::cout << "Background task completed!\n"; });
 }
 
 int main() {
-    boost::asio::io_context io_context;
-    auto work_guard = boost::asio::make_work_guard(io_context);
+  boost::asio::io_context io_context;
+  auto work_guard = boost::asio::make_work_guard(io_context);
 
-    // Work guard avoids run() to return immediately
-    std::thread io_thread([&io_context]() {
-        std::cout << "Running io_context.\n";
-        io_context.run();
-        std::cout << "io_context stopped.\n";
-    });
+  // Work guard avoids run() to return immediately
+  std::thread io_thread([&io_context]() {
+    std::cout << "Running io_context.\n";
+    io_context.run();
+    std::cout << "io_context stopped.\n";
+  });
 
-    // Creating a thread and posting some work after 2 seconds.
-    std::thread worker(background_task, std::ref(io_context));
+  // Creating a thread and posting some work after 2 seconds.
+  std::thread worker(background_task, std::ref(io_context));
 
-    // Main thread doing some work.
-    std::this_thread::sleep_for(5s);
+  // Main thread doing some work.
+  std::this_thread::sleep_for(5s);
 
-    // Removing work guard to let the io_context stop.
-    std::cout << "Removing work_guard.\n";
-    work_guard.reset();
+  // Removing work guard to let the io_context stop.
+  std::cout << "Removing work_guard.\n";
+  work_guard.reset();
 
-    // Joining threads
-    worker.join();
-    io_thread.join();
-    return 0;
+  // Joining threads
+  worker.join();
+  io_thread.join();
+  return 0;
 }

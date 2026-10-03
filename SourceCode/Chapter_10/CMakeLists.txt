@@ -8,7 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Include Boost::Cobalt
 find_package(Boost 1.86.0 COMPONENTS thread system container cobalt)
 if(NOT Boost_FOUND OR NOT TARGET Boost::cobalt)
-    message(WARNING "Boost.Cobalt not found (Homebrew's boost bottle does not build it) — skipping Chapter_10.")
+    message(
+        WARNING
+            "Boost.Cobalt not found (Homebrew's boost bottle does not build it) — skipping Chapter_10."
+    )
     return()
 endif()
 

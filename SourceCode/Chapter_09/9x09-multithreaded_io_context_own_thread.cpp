@@ -1,11 +1,11 @@
 #include <boost/asio.hpp>
 #include <chrono>
 #include <iostream>
-#include <version>  // for __cpp_lib_syncbuf
+#include <version> // for __cpp_lib_syncbuf
 #if defined(__cpp_lib_syncbuf)
 #include <syncstream>
 #else
-#include "osyncstream_compat.h"  // Apple's libc++ ships <syncstream> without implementing std::osyncstream.
+#include "osyncstream_compat.h" // Apple's libc++ ships <syncstream> without implementing std::osyncstream.
 #endif
 #include <thread>
 
@@ -14,32 +14,32 @@
 using namespace std::chrono_literals;
 
 void background_task(int i) {
-    sync_cout << "Thread " << i << ": Starting...\n";
-    boost::asio::io_context io_context;
-    auto work_guard = boost::asio::make_work_guard(io_context);
+  sync_cout << "Thread " << i << ": Starting...\n";
+  boost::asio::io_context io_context;
+  auto work_guard = boost::asio::make_work_guard(io_context);
 
-    sync_cout << "Thread " << i << ": Setup timer...\n";
-    boost::asio::steady_timer timer(io_context, 1s);
-    timer.async_wait([&](const boost::system::error_code& ec) {
-        if (!ec) {
-            sync_cout << "Timer expired successfully!\n";
-        } else {
-            sync_cout << "Timer error: " << ec.message() << '\n';
-        }
-        work_guard.reset();
-    });
+  sync_cout << "Thread " << i << ": Setup timer...\n";
+  boost::asio::steady_timer timer(io_context, 1s);
+  timer.async_wait([&](const boost::system::error_code &ec) {
+    if (!ec) {
+      sync_cout << "Timer expired successfully!\n";
+    } else {
+      sync_cout << "Timer error: " << ec.message() << '\n';
+    }
+    work_guard.reset();
+  });
 
-    sync_cout << "Thread " << i << ": Running io_context...\n";
-    io_context.run();
+  sync_cout << "Thread " << i << ": Running io_context...\n";
+  io_context.run();
 }
 
 int main() {
-    const int num_threads = 4;
-    std::vector<std::jthread> threads;
+  const int num_threads = 4;
+  std::vector<std::jthread> threads;
 
-    for (auto i = 0; i < num_threads; ++i) {
-        threads.emplace_back(background_task, i);
-    }
+  for (auto i = 0; i < num_threads; ++i) {
+    threads.emplace_back(background_task, i);
+  }
 
-    return 0;
+  return 0;
 }

@@ -2,13 +2,9 @@
 
 int globalVar{0};
 
-void increase() {
-  globalVar++;
-}
+void increase() { globalVar++; }
 
-void decrease() {
-  globalVar--;  
-}
+void decrease() { globalVar--; }
 
 int main() {
   std::thread t1(increase);
