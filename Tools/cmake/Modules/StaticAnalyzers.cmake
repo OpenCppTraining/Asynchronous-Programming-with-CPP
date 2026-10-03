@@ -1,9 +1,8 @@
 # Opt-in static analysis via -D<option>=ON; none of these run by default, so
-# including this module doesn't change the default build. clang-tidy wires
-# up the project's existing .clang-tidy (still being reviewed/tuned, see
-# that file). Adapted from cpp-best-practices/cpp_starter_project
-# (lefticus), public domain (Unlicense):
-# https://github.com/cpp-best-practices/cpp_starter_project
+# including this module doesn't change the default build. clang-tidy wires up
+# the project's existing .clang-tidy (still being reviewed/tuned, see that
+# file). Adapted from cpp-best-practices/cpp_starter_project (lefticus), public
+# domain (Unlicense): https://github.com/cpp-best-practices/cpp_starter_project
 include_guard(GLOBAL)
 
 option(ENABLE_CPPCHECK "Enable static analysis with cppcheck" OFF)
@@ -11,7 +10,7 @@ if(ENABLE_CPPCHECK)
     find_program(CPPCHECK cppcheck)
     if(CPPCHECK)
         set(CMAKE_CXX_CPPCHECK ${CPPCHECK} --suppress=missingInclude
-                                --enable=all --inline-suppr --inconclusive)
+                               --enable=all --inline-suppr --inconclusive)
     else()
         log_error("cppcheck requested but executable not found")
     endif()

@@ -1,6 +1,7 @@
 # Leveled, colored message() wrapper used by the other modules in this
 # directory. Adapted from cpp-best-practices/cpp_starter_project (lefticus),
-# public domain (Unlicense): https://github.com/cpp-best-practices/cpp_starter_project
+# public domain (Unlicense):
+# https://github.com/cpp-best-practices/cpp_starter_project
 include_guard(GLOBAL)
 
 if(NOT WIN32)
@@ -46,7 +47,7 @@ endfunction()
 
 function(log_warn msg)
     log_message("${BoldYellow}[WARNING]${ColourReset} ${msg}"
-                 ${CMAKE_LOG_LEVEL_WARNING})
+                ${CMAKE_LOG_LEVEL_WARNING})
 endfunction()
 
 function(log_error msg)

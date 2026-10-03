@@ -1,7 +1,7 @@
 # Sane defaults: a build type if none was given, compile_commands.json for
-# clangd/editor tooling, colored diagnostics, and an opt-in LTO switch.
-# Adapted from cpp-best-practices/cpp_starter_project (lefticus), public
-# domain (Unlicense): https://github.com/cpp-best-practices/cpp_starter_project
+# clangd/editor tooling, colored diagnostics, and an opt-in LTO switch. Adapted
+# from cpp-best-practices/cpp_starter_project (lefticus), public domain
+# (Unlicense): https://github.com/cpp-best-practices/cpp_starter_project
 include_guard(GLOBAL)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -9,13 +9,12 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_BUILD_TYPE
         RelWithDebInfo
         CACHE STRING "Choose the type of build." FORCE)
-    set_property(CACHE CMAKE_BUILD_TYPE
-                  PROPERTY STRINGS "Debug" "Release" "MinSizeRel"
-                           "RelWithDebInfo")
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
+                                                 "MinSizeRel" "RelWithDebInfo")
 endif()
 
-# Lets clangd and other LLVM-based tooling see the real compiler flags
-# (include paths, -std=, etc.) instead of guessing.
+# Lets clangd and other LLVM-based tooling see the real compiler flags (include
+# paths, -std=, etc.) instead of guessing.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(ENABLE_IPO

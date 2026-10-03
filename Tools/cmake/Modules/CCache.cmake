@@ -1,7 +1,7 @@
 # Speeds up repeated builds, which matters here since FetchContent rebuilds
 # Boost/GoogleTest/fmt/spdlog/benchmark from source on every clean build dir.
-# Adapted from cpp-best-practices/cpp_starter_project (lefticus), public
-# domain (Unlicense): https://github.com/cpp-best-practices/cpp_starter_project
+# Adapted from cpp-best-practices/cpp_starter_project (lefticus), public domain
+# (Unlicense): https://github.com/cpp-best-practices/cpp_starter_project
 include_guard(GLOBAL)
 
 option(ENABLE_CACHE "Enable cache if available" ON)

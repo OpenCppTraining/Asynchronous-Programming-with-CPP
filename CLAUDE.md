@@ -35,6 +35,8 @@ ctest --preset macos-clang-debug
 
 Presets are conditioned on `hostSystemName`, so `cmake --list-presets` only shows the ones valid for the current OS. `macos-gcc-*` expects Homebrew GCC (`gcc-15`/`g++-15`) — Apple's own `gcc` is a Clang alias.
 
+The plain `cmake -S . -B build` path (no preset) uses CMake's own default generator for the platform — **Unix Makefiles** on macOS/Linux, not Ninja — unless `CMAKE_GENERATOR` is set in the environment. Only the presets above force Ninja.
+
 ### Build tooling (`Tools/cmake/Modules/`)
 
 Adapted from `cpp-best-practices/cpp_starter_project` (lefticus), public domain. Included via `BuildTools.cmake` near the top of the root `CMakeLists.txt` (before `FetchContent`), except `StaticAnalyzers.cmake`, which is included separately right before `add_subdirectory(SourceCode)` — deliberately placed *after* the FetchContent calls so an opt-in `-DENABLE_CLANG_TIDY=ON` (etc.) only lints this project's own code, not the fetched Boost/GoogleTest/fmt/spdlog/benchmark sources.
@@ -43,7 +45,8 @@ Adapted from `cpp-best-practices/cpp_starter_project` (lefticus), public domain.
 - `StandardProjectSettings.cmake`: defaults `CMAKE_BUILD_TYPE` to `RelWithDebInfo` if unset, turns on `CMAKE_EXPORT_COMPILE_COMMANDS` (needed for clangd/editor tooling to see real compiler flags), colored diagnostics, opt-in LTO (`-DENABLE_IPO=ON`).
 - `CCache.cmake`: uses `ccache` as `CMAKE_CXX_COMPILER_LAUNCHER` if found (`-DENABLE_CACHE=OFF` to disable) — meaningfully speeds up repeat builds now that FetchContent recompiles the vendored dependencies from source (~4x faster on a second clean build in testing).
 - `StaticAnalyzers.cmake`: `-DENABLE_CLANG_TIDY=ON` wires up this project's `.clang-tidy` (see Code style below); `-DENABLE_CPPCHECK=ON` / `-DENABLE_INCLUDE_WHAT_YOU_USE=ON` are also available. All OFF by default.
-- Not adopted from the source template, deliberately: `CompilerWarnings.cmake` (its `WARNINGS_AS_ERRORS` default would almost certainly break the existing examples, which weren't written against `-Wconversion -Wold-style-cast` etc.), `Sanitizers.cmake` (redundant with Chapter_12's existing per-target, per-example sanitizer logic), `CPM.cmake`/`Fetch*.cmake` (would duplicate/conflict with this project's own `FetchContent` setup), `CodeCoverage.cmake`/`Doxygen.cmake` (disproportionate for a book-examples repo with no API to document and a 12-test suite).
+- `CompilerWarnings.cmake`: defines `set_project_warnings(<target>)` (stricter `-Wall -Wextra -Wconversion -Wold-style-cast -Wshadow` etc.). Defined but **inert** — root `CMakeLists.txt` creates an unused `project_warnings` INTERFACE target from it and does not link it into anything. Enable per chapter, once that chapter's warnings have actually been looked at, by adding `project_warnings` to its existing `target_link_libraries()` call (not a separate call — CMake rejects mixing the plain signature every chapter uses with a keyword `PRIVATE`/`PUBLIC` one on the same target). `WARNINGS_AS_ERRORS` defaults OFF here (the upstream module defaults it ON) — turn that on only once a given chapter's own warnings have actually been cleared, not as a second project-wide flip.
+- Not adopted from the source template, deliberately: `Sanitizers.cmake` (redundant with Chapter_12's existing per-target, per-example sanitizer logic), `CPM.cmake`/`Fetch*.cmake` (would duplicate/conflict with this project's own `FetchContent` setup), `CodeCoverage.cmake`/`Doxygen.cmake` (disproportionate for a book-examples repo with no API to document and a 12-test suite).
 
 ### Dependencies
 

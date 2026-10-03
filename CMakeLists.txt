@@ -62,6 +62,18 @@ set(BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
 # not the third-party dependencies fetched above.
 include(StaticAnalyzers)
 
+# Stricter warnings (see Tools/cmake/Modules/CompilerWarnings.cmake), not linked
+# into anything yet. Enable for a chapter once its warnings have actually been
+# looked at -- not as a single project-wide flip -- by adding project_warnings
+# to that chapter's existing target_link_libraries() call, e.g.:
+# target_link_libraries(${EXECUTABLE_NAME} Boost::thread Boost::system
+# Boost::container project_warnings) (it has to go in the same call as the
+# existing libraries, not a separate target_link_libraries() call -- CMake
+# rejects mixing the plain signature every chapter already uses with the keyword
+# PRIVATE/PUBLIC signature on the same target.)
+add_library(project_warnings INTERFACE)
+set_project_warnings(project_warnings)
+
 # Add source code
 add_subdirectory(SourceCode)
 
