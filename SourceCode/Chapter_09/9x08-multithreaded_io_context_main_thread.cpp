@@ -5,6 +5,8 @@
 void long_running_task(boost::asio::io_context& io_context, int task_duration) {
     std::cout << "Background task started: Duration = " << task_duration << " seconds.\n";
     std::this_thread::sleep_for(std::chrono::seconds(task_duration));
+    // io_context::post() was a member function in older Boost.Asio; it has
+    // since been removed, so use the free function form instead.
     boost::asio::post(io_context, [&io_context]() {
         std::cout << "Background task completed.\n";
         io_context.stop();

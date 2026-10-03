@@ -1,12 +1,13 @@
 #pragma once
 
-// Neither Apple's libc++ nor upstream LLVM's libc++ ship <generator> yet.
+// std::generator<T> fallback for standard libraries that don't ship
+// <generator> yet (as of this writing, neither Apple's nor upstream LLVM's
+// libc++ do). Only include this when <generator> isn't available — see the
+// call sites, which choose between <generator> and this header.
+//
 // This is a minimal single-pass coroutine generator covering the subset of
 // std::generator<T> used in this book: co_yield of a value, and iteration
 // via begin()/end() or a range-based for loop.
-#if __has_include(<generator>)
-#include <generator>
-#else
 #include <coroutine>
 #include <exception>
 #include <utility>
@@ -79,4 +80,3 @@ class generator {
 };
 
 }  // namespace std
-#endif

@@ -1,13 +1,9 @@
 #pragma once
 
-// Apple's libc++ ships a <syncstream> header but does not implement
-// std::osyncstream (no __cpp_lib_syncbuf). This falls back to an equivalent
-// built on a shared mutex when the real one isn't available.
-#include <version>
-
-#if defined(__cpp_lib_syncbuf)
-#include <syncstream>
-#else
+// std::osyncstream fallback for standard libraries that don't implement it
+// (e.g. Apple's libc++, which ships a <syncstream> header without defining
+// osyncstream). Only include this when __cpp_lib_syncbuf is undefined — see
+// the call sites, which choose between <syncstream> and this header.
 #include <iostream>
 #include <mutex>
 #include <sstream>
@@ -32,4 +28,3 @@ class osyncstream : public std::ostringstream {
 };
 
 }  // namespace std
-#endif

@@ -9,6 +9,8 @@ void background_task(boost::asio::io_context& io_context) {
     // Waiting for 2 seconds before posting work
     std::this_thread::sleep_for(2s);
     std::cout << "Posting a background task.\n";
+    // io_context::post() was a member function in older Boost.Asio; it has
+    // since been removed, so use the free function form instead.
     boost::asio::post(io_context, []() { std::cout << "Background task completed!\n"; });
 }
 

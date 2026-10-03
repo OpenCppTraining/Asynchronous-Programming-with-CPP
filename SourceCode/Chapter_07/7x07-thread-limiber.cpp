@@ -2,7 +2,12 @@
 #include <future>
 #include <iostream>
 #include <semaphore>
-#include "osyncstream_compat.h"
+#include <version>  // for __cpp_lib_syncbuf
+#if defined(__cpp_lib_syncbuf)
+#include <syncstream>
+#else
+#include "osyncstream_compat.h"  // Apple's libc++ ships <syncstream> without implementing std::osyncstream.
+#endif
 #include <vector>
 
 #define sync_cout std::osyncstream(std::cout)

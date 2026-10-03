@@ -12,7 +12,9 @@ void my_handler() {
     }
 }
 
-void post_handler(boost::asio::io_context& io_context) { 
+void post_handler(boost::asio::io_context& io_context) {
+    // io_context::post() was a member function in older Boost.Asio; it has
+    // since been removed, so use the free function form instead.
     boost::asio::post(io_context, my_handler);
 }
 

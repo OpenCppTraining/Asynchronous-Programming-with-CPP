@@ -24,7 +24,8 @@ class Logger {
     }
 
     void log(const std::string message) {
-        //strand_.post(std::bind(&Logger::do_log, this, message));
+        // strand::post() was a member function in older Boost.Asio; it has
+        // since been removed, so use the free function form instead.
         boost::asio::post(strand_, [this, message]() { do_log(message); });
     }
 

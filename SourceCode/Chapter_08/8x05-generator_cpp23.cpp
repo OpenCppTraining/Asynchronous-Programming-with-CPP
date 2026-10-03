@@ -1,7 +1,11 @@
 // Available in C++23 with GCC14.
-// Clang does not support std::generator; generator_compat.h provides a
-// minimal shim when <generator> isn't available.
+// Neither Apple's nor upstream LLVM's libc++ ship <generator> yet;
+// generator_compat.h provides a minimal shim for those.
+#if __has_include(<generator>)
+#include <generator>
+#else
 #include "generator_compat.h"
+#endif
 #include <iostream>
 
 std::generator<int> fibonacci_generator() {
