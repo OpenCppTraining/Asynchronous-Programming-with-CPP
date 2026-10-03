@@ -7,7 +7,7 @@ This is the code repository for [Asynchronous Programming with C++](https://www.
 **Build blazing-fast software with multithreading and asynchronous programming for ultimate efficiency**
 
 ## What is this book about?
-As hardware advancements continue to accelerate, bringing greater memory capacity and more CPU cores, software must evolve to adapt to efficiently use all available resources and reduce idle CPU cycles. 
+As hardware advancements continue to accelerate, bringing greater memory capacity and more CPU cores, software must evolve to adapt to efficiently use all available resources and reduce idle CPU cycles.
 In this book, two seasoned software engineers with about five decades of combined experience will teach you how to implement concurrent and asynchronous solutions in C++.
 
 * Explore the different parallel paradigms and know when to apply them
@@ -19,7 +19,7 @@ In this book, two seasoned software engineers with about five decades of combine
 
 If you feel this book is for you, get your [copy](https://www.amazon.com/Asynchronous-Programming-blazing-fast-multithreading-asynchronous/dp/1835884245/) today!
 
-<a href="https://www.packtpub.com/?utm_source=github&utm_medium=banner&utm_campaign=GitHubBanner"><img src="https://raw.githubusercontent.com/PacktPublishing/GitHub/master/GitHub.png" 
+<a href="https://www.packtpub.com/?utm_source=github&utm_medium=banner&utm_campaign=GitHubBanner"><img src="https://raw.githubusercontent.com/PacktPublishing/GitHub/master/GitHub.png"
 alt="https://www.packtpub.com/" border="5" /></a>
 
 ## Instructions and Navigations
@@ -66,5 +66,3 @@ Javier holds a PhD cum laude in high-performance computing from the University o
 **Juan Antonio Rufes** is a software engineer with 30 years of experience, specializing in low-level and systems programming, primarily in C, C++, 0x86 assembly, and Python.
 His expertise includes Windows and Linux optimization, Windows kernel drivers for antivirus and encryption, TCP/IP protocol analysis, and low-latency financial systems such as smart order routing and FPGA-based trading systems. He has worked with software companies, investment banks, and hedge funds.
 Juan holds an MSc in electrical engineering from the Polytechnic University of Valencia, Spain.
-
-
