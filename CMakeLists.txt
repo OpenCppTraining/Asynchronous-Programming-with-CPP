@@ -5,6 +5,9 @@ project("Asynchronous Programming in C++")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Tools/cmake/Modules)
+include(BuildTools)
+
 include(FetchContent)
 
 # Boost, built from source instead of relying on a system package manager:
@@ -53,6 +56,11 @@ endif()
 
 # Set the output directory for binaries
 set(BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
+
+# Opt-in static analysis (-DENABLE_CLANG_TIDY=ON etc.), included here rather
+# than from BuildTools so it only applies to this project's own targets below,
+# not the third-party dependencies fetched above.
+include(StaticAnalyzers)
 
 # Add source code
 add_subdirectory(SourceCode)

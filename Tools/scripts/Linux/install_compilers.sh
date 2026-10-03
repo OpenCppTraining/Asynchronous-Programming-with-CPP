@@ -30,12 +30,13 @@ apt install -y libgtest-dev libgmock-dev
 
 # Build and install Google Benchmark
 mkdir build_benchmark
-cd build_benchmark
+cd build_benchmark || exit
 git clone https://github.com/google/benchmark.git
-cd benchmark
+cd benchmark || exit
 cmake -E make_directory "build"
 cmake -DCMAKE_BUILD_TYPE=Release -S . -B "build"
 cmake --build "build" --config Release
 cmake --build "build" --config Release --target install
+# shellcheck disable=SC2103 # staying in the shell to rm -rf the dir below
 cd ..
 rm -rf build_benchmark

@@ -1,9 +1,5 @@
 bin/*
 build/*
-CMakeFiles
-Makefile
-*.cmake
-CMakeCache.txt
 
 .DS_Store
 *.bak

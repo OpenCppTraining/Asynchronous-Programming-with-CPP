@@ -23,6 +23,28 @@ cmake --build build --target 3x01-threads_creation
 
 Run the GTest-based tests (Chapter_12 only) via `ctest --output-on-failure` from inside `build/`.
 
+### CMake presets
+
+`CMakePresets.json` offers `<os>-<compiler>-<debug|release>` presets (e.g. `macos-clang-debug`, `linux-gcc-release`), each using Ninja and binary dir `build/<presetName>`:
+
+```bash
+cmake --preset macos-clang-debug
+cmake --build --preset macos-clang-debug
+ctest --preset macos-clang-debug
+```
+
+Presets are conditioned on `hostSystemName`, so `cmake --list-presets` only shows the ones valid for the current OS. `macos-gcc-*` expects Homebrew GCC (`gcc-15`/`g++-15`) — Apple's own `gcc` is a Clang alias.
+
+### Build tooling (`Tools/cmake/Modules/`)
+
+Adapted from `cpp-best-practices/cpp_starter_project` (lefticus), public domain. Included via `BuildTools.cmake` near the top of the root `CMakeLists.txt` (before `FetchContent`), except `StaticAnalyzers.cmake`, which is included separately right before `add_subdirectory(SourceCode)` — deliberately placed *after* the FetchContent calls so an opt-in `-DENABLE_CLANG_TIDY=ON` (etc.) only lints this project's own code, not the fetched Boost/GoogleTest/fmt/spdlog/benchmark sources.
+
+- `PreventInSourceBuilds.cmake`: rejects `cmake .` run directly in the source tree.
+- `StandardProjectSettings.cmake`: defaults `CMAKE_BUILD_TYPE` to `RelWithDebInfo` if unset, turns on `CMAKE_EXPORT_COMPILE_COMMANDS` (needed for clangd/editor tooling to see real compiler flags), colored diagnostics, opt-in LTO (`-DENABLE_IPO=ON`).
+- `CCache.cmake`: uses `ccache` as `CMAKE_CXX_COMPILER_LAUNCHER` if found (`-DENABLE_CACHE=OFF` to disable) — meaningfully speeds up repeat builds now that FetchContent recompiles the vendored dependencies from source (~4x faster on a second clean build in testing).
+- `StaticAnalyzers.cmake`: `-DENABLE_CLANG_TIDY=ON` wires up this project's `.clang-tidy` (see Code style below); `-DENABLE_CPPCHECK=ON` / `-DENABLE_INCLUDE_WHAT_YOU_USE=ON` are also available. All OFF by default.
+- Not adopted from the source template, deliberately: `CompilerWarnings.cmake` (its `WARNINGS_AS_ERRORS` default would almost certainly break the existing examples, which weren't written against `-Wconversion -Wold-style-cast` etc.), `Sanitizers.cmake` (redundant with Chapter_12's existing per-target, per-example sanitizer logic), `CPM.cmake`/`Fetch*.cmake` (would duplicate/conflict with this project's own `FetchContent` setup), `CodeCoverage.cmake`/`Doxygen.cmake` (disproportionate for a book-examples repo with no API to document and a 12-test suite).
+
 ### Dependencies
 
 All third-party dependencies (Boost, GoogleTest, `fmt`, `spdlog`, `benchmark`) are fetched and built from source via CMake's `FetchContent` — nothing needs to be installed system-wide first. The only prerequisites are a C++20 compiler, CMake, and git/network access on first configure (sources are cached under `build/_deps/` afterward). This replaced relying on system package managers because Ubuntu's apt Boost is older than this project's minimum and Homebrew's bottle doesn't build Boost.Cobalt at all — building from source sidesteps both.
@@ -73,4 +95,4 @@ Apple's libc++ (and, as of this writing, upstream LLVM's libc++ too) is missing 
 
 ## Editor/debug config
 
-`.vscode/tasks.json` and `launch.json` build/debug the *currently open file only* via a raw `g++` invocation (not through CMake) — paths in there are Linux-specific (`/usr/bin/g++`, `/usr/include/boost/`, `gdb`) and won't work as-is on macOS, and don't account for the Boost include paths FetchContent uses (`build/_deps/boost-src/libs/*/include`).
+`.vscode/tasks.json` and `launch.json` build/debug the *currently open file only* via a raw `g++` invocation (not through CMake) — paths in there are Linux-specific (`/usr/bin/g++`, `/usr/include/boost/`, `gdb`) and won't work as-is on macOS, and don't account for the Boost include paths FetchContent uses (`build/_deps/boost-src/libs/*/include`). `.vscode/extensions.json` recommends `clangd` over `ms-vscode.cpptools` (actively discouraged via `unwantedRecommendations`) — clangd reads `compile_commands.json` (now generated via `StandardProjectSettings.cmake`) and respects `.clang-format`/`.clang-tidy` directly, so it doesn't need `c_cpp_properties.json` at all.

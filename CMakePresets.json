@@ -1,0 +1,227 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 23,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "conf-common",
+            "description": "Settings shared by every configuration",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}"
+        },
+        {
+            "name": "conf-linux-common",
+            "description": "Linux settings for gcc and clang",
+            "hidden": true,
+            "inherits": "conf-common",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "conf-linux-gcc-common",
+            "hidden": true,
+            "inherits": "conf-linux-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        },
+        {
+            "name": "linux-gcc-debug",
+            "displayName": "Linux – GCC – Debug",
+            "inherits": "conf-linux-gcc-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+        },
+        {
+            "name": "linux-gcc-release",
+            "displayName": "Linux – GCC – Release",
+            "inherits": "conf-linux-gcc-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+        },
+        {
+            "name": "conf-linux-clang-common",
+            "hidden": true,
+            "inherits": "conf-linux-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "linux-clang-debug",
+            "displayName": "Linux – Clang – Debug",
+            "inherits": "conf-linux-clang-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+        },
+        {
+            "name": "linux-clang-release",
+            "displayName": "Linux – Clang – Release",
+            "inherits": "conf-linux-clang-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+        },
+        {
+            "name": "conf-macos-common",
+            "description": "macOS settings for gcc and clang",
+            "hidden": true,
+            "inherits": "conf-common",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+        {
+            "name": "conf-macos-clang-common",
+            "hidden": true,
+            "inherits": "conf-macos-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "macos-clang-debug",
+            "displayName": "macOS – Clang – Debug",
+            "inherits": "conf-macos-clang-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+        },
+        {
+            "name": "macos-clang-release",
+            "displayName": "macOS – Clang – Release",
+            "inherits": "conf-macos-clang-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+        },
+        {
+            "name": "conf-macos-gcc-common",
+            "hidden": true,
+            "inherits": "conf-macos-common",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc-15",
+                "CMAKE_CXX_COMPILER": "g++-15"
+            }
+        },
+        {
+            "name": "macos-gcc-debug",
+            "displayName": "macOS – Homebrew GCC – Debug",
+            "description": "Needs Homebrew GCC (gcc-15/g++-15); Apple's system compiler is Clang",
+            "inherits": "conf-macos-gcc-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+        },
+        {
+            "name": "macos-gcc-release",
+            "displayName": "macOS – Homebrew GCC – Release",
+            "description": "Needs Homebrew GCC (gcc-15/g++-15); Apple's system compiler is Clang",
+            "inherits": "conf-macos-gcc-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+        },
+        {
+            "name": "conf-windows-common",
+            "description": "Windows settings for clang (this project's documented Windows toolchain)",
+            "hidden": true,
+            "inherits": "conf-common",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            },
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "windows-clang-debug",
+            "displayName": "Windows – Clang – Debug",
+            "inherits": "conf-windows-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+        },
+        {
+            "name": "windows-clang-release",
+            "displayName": "Windows – Clang – Release",
+            "inherits": "conf-windows-common",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "build-common",
+            "hidden": true,
+            "targets": ["build_all"]
+        },
+        {
+            "name": "linux-gcc-debug", "inherits": "build-common", "configurePreset": "linux-gcc-debug"
+        },
+        {
+            "name": "linux-gcc-release", "inherits": "build-common", "configurePreset": "linux-gcc-release"
+        },
+        {
+            "name": "linux-clang-debug", "inherits": "build-common", "configurePreset": "linux-clang-debug"
+        },
+        {
+            "name": "linux-clang-release", "inherits": "build-common", "configurePreset": "linux-clang-release"
+        },
+        {
+            "name": "macos-clang-debug", "inherits": "build-common", "configurePreset": "macos-clang-debug"
+        },
+        {
+            "name": "macos-clang-release", "inherits": "build-common", "configurePreset": "macos-clang-release"
+        },
+        {
+            "name": "macos-gcc-debug", "inherits": "build-common", "configurePreset": "macos-gcc-debug"
+        },
+        {
+            "name": "macos-gcc-release", "inherits": "build-common", "configurePreset": "macos-gcc-release"
+        },
+        {
+            "name": "windows-clang-debug", "inherits": "build-common", "configurePreset": "windows-clang-debug"
+        },
+        {
+            "name": "windows-clang-release", "inherits": "build-common", "configurePreset": "windows-clang-release"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "test-common",
+            "hidden": true,
+            "output": { "outputOnFailure": true },
+            "execution": { "noTestsAction": "error", "stopOnFailure": true }
+        },
+        {
+            "name": "linux-gcc-debug", "inherits": "test-common", "configurePreset": "linux-gcc-debug"
+        },
+        {
+            "name": "linux-gcc-release", "inherits": "test-common", "configurePreset": "linux-gcc-release"
+        },
+        {
+            "name": "linux-clang-debug", "inherits": "test-common", "configurePreset": "linux-clang-debug"
+        },
+        {
+            "name": "linux-clang-release", "inherits": "test-common", "configurePreset": "linux-clang-release"
+        },
+        {
+            "name": "macos-clang-debug", "inherits": "test-common", "configurePreset": "macos-clang-debug"
+        },
+        {
+            "name": "macos-clang-release", "inherits": "test-common", "configurePreset": "macos-clang-release"
+        },
+        {
+            "name": "macos-gcc-debug", "inherits": "test-common", "configurePreset": "macos-gcc-debug"
+        },
+        {
+            "name": "macos-gcc-release", "inherits": "test-common", "configurePreset": "macos-gcc-release"
+        },
+        {
+            "name": "windows-clang-debug", "inherits": "test-common", "configurePreset": "windows-clang-debug"
+        },
+        {
+            "name": "windows-clang-release", "inherits": "test-common", "configurePreset": "windows-clang-release"
+        }
+    ]
+}
