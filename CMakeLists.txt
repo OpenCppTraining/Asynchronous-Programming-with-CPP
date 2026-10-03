@@ -5,31 +5,43 @@ project("Asynchronous Programming in C++")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Find Boost
-find_package(Boost 1.86.0 REQUIRED COMPONENTS thread system container)
-if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Boost 1.86.0 is required but not found.")
-endif()
+include(FetchContent)
 
-# Include Boost directories
-include_directories(${Boost_INCLUDE_DIRS})
+# Boost, built from source instead of relying on a system package manager:
+# Ubuntu's apt Boost is older than this project's minimum, and Homebrew's bottle
+# doesn't build Boost.Cobalt at all. Only the components the examples actually
+# use are configured/built (BOOST_INCLUDE_LIBRARIES trims the rest of Boost's
+# ~160 libraries out of the build).
+set(BOOST_INCLUDE_LIBRARIES thread system container asio cobalt)
+set(BOOST_ENABLE_CMAKE ON)
+FetchContent_Declare(
+    Boost
+    URL https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.tar.xz
+    URL_HASH
+        SHA256=f48b48390380cfb94a629872346e3a81370dc498896f16019ade727ab72eb1ec
+    DOWNLOAD_EXTRACT_TIMESTAMP ON)
+FetchContent_MakeAvailable(Boost)
 
-# Find GoogleTest
+# GoogleTest
 enable_testing()
-find_package(GTest REQUIRED)
-if(NOT GTest_FOUND)
-    message(FATAL_ERROR "GoogleTest library is required but not found.")
-endif()
+set(INSTALL_GTEST
+    OFF
+    CACHE BOOL "" FORCE)
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG 063de7e9578f82b369302001269680b4b1553359 # frozen: v1.18.0
+)
+FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
-# Include GoogleTest directories
-include_directories(${GTest_INCLUDE_DIRS})
-
-# Add {fmt} library
-find_package(fmt)
-if(NOT fmt_FOUND)
-    message(FATAL_ERROR "fmt library is required but not found.")
-endif()
+# {fmt}
+FetchContent_Declare(
+    fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+    GIT_TAG 1be298e1bd68957e4cd352e1f676f00e07dcfb57 # frozen: 12.2.0
+)
+FetchContent_MakeAvailable(fmt)
 
 # Linker flags
 if((CMAKE_CXX_COMPILER_ID MATCHES GNU) OR (CMAKE_CXX_COMPILER_ID MATCHES Clang))

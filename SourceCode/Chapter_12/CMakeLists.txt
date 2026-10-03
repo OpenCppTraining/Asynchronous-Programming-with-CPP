@@ -27,7 +27,8 @@ file(GLOB SOURCES "*.cpp")
 foreach(SOURCE ${SOURCES})
     get_filename_component(EXECUTABLE_NAME ${SOURCE} NAME_WE)
     add_executable(${EXECUTABLE_NAME} ${SOURCE})
-    target_link_libraries(${EXECUTABLE_NAME} ${Boost_LIBRARIES})
+    target_link_libraries(${EXECUTABLE_NAME} Boost::thread Boost::system
+                          Boost::container Boost::asio)
 
     # Add compiler and linker flags depending on type of sanitizer
     if(EXECUTABLE_NAME MATCHES ".*ASAN.*")
@@ -77,7 +78,7 @@ foreach(SOURCE ${SOURCES})
         target_link_options(${EXECUTABLE_NAME} PRIVATE -fsanitize=undefined)
     elseif(EXECUTABLE_NAME MATCHES ".*test.*")
         message("Enable testing for ${EXECUTABLE_NAME}")
-        target_link_libraries(${EXECUTABLE_NAME} GTest::GTest GTest::Main
+        target_link_libraries(${EXECUTABLE_NAME} GTest::gtest GTest::gtest_main
                               GTest::gmock_main)
         gtest_discover_tests(${EXECUTABLE_NAME})
     else()

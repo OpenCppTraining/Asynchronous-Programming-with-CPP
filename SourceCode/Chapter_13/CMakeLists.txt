@@ -1,5 +1,16 @@
 # Include Benchmark library
-find_package(benchmark REQUIRED)
+set(BENCHMARK_ENABLE_TESTING
+    OFF
+    CACHE BOOL "" FORCE)
+set(BENCHMARK_ENABLE_INSTALL
+    OFF
+    CACHE BOOL "" FORCE)
+FetchContent_Declare(
+    benchmark
+    GIT_REPOSITORY https://github.com/google/benchmark.git
+    GIT_TAG 192ef10025eb2c4cdd392bc502f0c852196baa48 # frozen: v1.9.5
+)
+FetchContent_MakeAvailable(benchmark)
 
 # Set compiler flags
 set(CMAKE_CXX_FLAGS_DEBUG "")
